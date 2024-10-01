@@ -39,7 +39,8 @@ function parseDiff(arr1, arr2, key){
 
 function isSame(a, b){
     /*
-    * function compares two simple datatypes if they match (number, string, boolean)
+    * Function compares two simple datatypes if they match (number, string, boolean)
+    * Types of a and b have to match
     * */
 
     if(typeof a === "string" && typeof b === "string"){
