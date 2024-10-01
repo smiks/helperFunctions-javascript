@@ -36,3 +36,112 @@ function parseDiff(arr1, arr2, key){
         added: added
     }
 }
+
+function isSame(a, b){
+    /*
+    * function compares two simple datatypes if they match (number, string, boolean)
+    * */
+
+    if(typeof a === "string" && typeof b === "string"){
+        if(a.localeCompare(b) == 0){
+            return true
+        }
+    }
+    if(typeof a === "number" && typeof b === "number") {
+        return a == b
+    }
+
+    return a == b
+}
+
+function deepFind(needle, haystack, key=null){
+    /*
+    * Accepts a needle and a haystack. It checks if needle exists in a haystack.
+    * Haystack can be an array or array of arrays, or array of objects.
+    * If key = null, then it will check for simple datatypes (number, string, boolean)
+    * If key is not null, it will check for an object's property
+    * */
+    let foundTheNeedle = false
+    function search(n, h){
+
+        const s = h.length
+        let el
+        for(let i=0; i<s; i++) {
+            el = h[i]
+            if(Array.isArray((el))){
+                search(n, el)
+            }
+            if(key !== null && el instanceof Object){
+                if(el.hasOwnProperty(key) && isSame(el[key], needle)){
+                    foundTheNeedle = true
+                }
+            }
+            else if(key === null && !(el instanceof Object)){
+                if(isSame(el, needle)){
+                    foundTheNeedle = true
+                }
+            }
+        }
+    }
+
+    search(needle, haystack)
+    return foundTheNeedle
+}
+
+
+
+
+/***********************/
+/******* TESTS *********/
+/***********************/
+function runTests(){
+    const a = [{a: 'a', b: 1}, {a: 'b', b: 2}]
+    const b = [{a: 'a', b: 1}, {a: 'c', b: 3}]
+    let ret = parseDiff(a, b, 'a')
+    let expc = {
+        removedKeys: [ 'b' ],
+        addedKeys: [ 'c' ],
+        removed: [ { a: 'b', b: 2 } ],
+        added: [ { a: 'c', b: 3 } ]
+    }
+    //console.log('PARSE DIFF TEST')
+    //console.log(ret)
+    //console.log(expc)
+
+
+    const n = "findMe"
+    const h1 = ["test", "not Me", 2, true, ["test", "not Me", 2, true], {"theKesy": "findsMe"}, "findMe"]
+    const h2 = ["test", "not Me", 2, true, ["test", "not Me", 2, true], {"theKey": "findMe"}]
+    const h3 = ["test", "not Me", 2, true, ["test", "not Me", 2, true, {"theKey": "findMe"}]]
+    const h4 = ["test", "not Me", 2, true, ["test", "not Me", 2, true, {"notTheKey": "findMee"}]]
+
+    ret = deepFind(n, h1)
+    if(ret){
+        console.log('Deepfind test 1 :: PASSED')
+    } else {
+        console.log('Deepfind test 1 :: FAILED')
+    }
+
+    ret = deepFind(n, h2, "theKey")
+    if(ret){
+        console.log('Deepfind test 2 :: PASSED')
+    } else {
+        console.log('Deepfind test 2 :: FAILED')
+    }
+
+    ret = deepFind(n, h3, "theKey")
+    if(ret){
+        console.log('Deepfind test 2 :: PASSED')
+    } else {
+        console.log('Deepfind test 2 :: FAILED')
+    }
+
+    ret = deepFind(n, h4, "theKey")
+    if(!ret){
+        console.log('Deepfind test 2 :: PASSED')
+    } else {
+        console.log('Deepfind test 2 :: FAILED')
+    }
+}
+
+runTests()
