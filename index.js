@@ -89,6 +89,41 @@ function deepFind(needle, haystack, key=null){
     return foundTheNeedle
 }
 
+function utf8ToBase64(utf8String) {
+    /*
+    * Accepts string with characters inside UTF-8 range (outside the Latin1 range  )
+    * and generagets Base64 string.
+    */
+    // Convert UTF-8 string to bytes
+    let utf8Bytes = new TextEncoder().encode(utf8String);
+
+    // Convert bytes to binary string
+    let binaryString = '';
+    utf8Bytes.forEach(byte => {
+        binaryString += String.fromCharCode(byte);
+    });
+
+    // Encode binary string to Base64
+    return btoa(binaryString);
+}
+
+function base64ToUtf8(base64) {
+    /*
+    * Accepts base64 encoded string and decodes it to UTF-8 string.
+    */    
+    // Decode Base64 to a binary string (bytes)
+    let binaryString = atob(base64);
+
+    // Convert binary string to an array of character codes
+    let bytes = new Uint8Array(binaryString.length);
+    for (let i = 0; i < binaryString.length; i++) {
+        bytes[i] = binaryString.charCodeAt(i);
+    }
+
+    // Decode UTF-8 bytes into a string
+    let utf8Decoder = new TextDecoder('utf-8');
+    return utf8Decoder.decode(bytes);
+}
 
 
 
@@ -142,6 +177,15 @@ function runTests(){
         console.log('Deepfind test 2 :: PASSED')
     } else {
         console.log('Deepfind test 2 :: FAILED')
+    }
+
+    let s = "asdfŽĐŠĆČ_:;*?=)$€öä¨iöáéíóăěę"
+    let b64 = utf8ToBase64(s)
+
+    if(isSame(s, base64ToUtf8(b64))){
+        console.log('Base64 Decoder/Encoder :: PASSED')
+    } else {
+        console.log('Base64 Decoder/Encoder :: FAILED')
     }
 }
 
