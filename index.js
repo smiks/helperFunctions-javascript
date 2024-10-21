@@ -37,6 +37,14 @@ function parseDiff(arr1, arr2, key){
     }
 }
 
+function findCommonElements(array1, array2) {
+    /*
+    * Returns list of elements present in both array1 and array2
+    * */
+    const set1 = new Set(array1);
+    return array2.filter((el) => set1.has(el));
+}
+
 function isSame(a, b){
     /*
     * Function compares two simple datatypes if they match (number, string, boolean)
@@ -89,6 +97,100 @@ function deepFind(needle, haystack, key=null){
     return foundTheNeedle
 }
 
+function utf8ToBase64(utf8String) {
+    /*
+    * Accepts string with characters inside UTF-8 range (outside the Latin1 range  )
+    * and generagets Base64 string.
+    */
+    // Convert UTF-8 string to bytes
+    let utf8Bytes = new TextEncoder().encode(utf8String);
+
+    // Convert bytes to binary string
+    let binaryString = '';
+    utf8Bytes.forEach(byte => {
+        binaryString += String.fromCharCode(byte);
+    });
+
+    // Encode binary string to Base64
+    return btoa(binaryString);
+}
+
+function base64ToUtf8(base64) {
+    /*
+    * Accepts base64 encoded string and decodes it to UTF-8 string.
+    */
+    // Decode Base64 to a binary string (bytes)
+    let binaryString = atob(base64);
+
+    // Convert binary string to an array of character codes
+    let bytes = new Uint8Array(binaryString.length);
+    for (let i = 0; i < binaryString.length; i++) {
+        bytes[i] = binaryString.charCodeAt(i);
+    }
+
+    // Decode UTF-8 bytes into a string
+    let utf8Decoder = new TextDecoder('utf-8');
+    return utf8Decoder.decode(bytes);
+}
+
+function findInArray(array, what) {
+    /*
+    *   Fast search through array. It only works when looking for simple types.
+    * */
+    const arL = array.length-1
+    if(arL < 1){
+        return false
+    }
+    for (let i = arL; i>=0; i--) {
+        if(array[i] == what){
+            return true
+        }
+    }
+    return false
+}
+
+function findMinMax(array) {
+    /*
+    * Function quickly finds MIN and MAX element in array.
+    * Function returns false if array is empty
+    * */
+    const arL = array.length
+    if(arL === 0){
+        return false
+    }
+    let tmin = array[0]
+    let tmax = array[1]
+
+    if(arL % 2 !== 0){
+        array.push(tmin)
+    }
+    for (let i = 0; i < arL; i += 2) {
+        let a = array[i]
+        let b = array[i + 1]
+
+        // Ensure both elements are numbers
+        if (isNaN(a) || isNaN(b)) {
+            continue
+        }
+
+        if (a < b) {
+            tmin = Math.min(tmin, a)
+            tmax = Math.max(tmax, b)
+        } else {
+            tmin = Math.min(tmin, b)
+            tmax = Math.max(tmax, a)
+        }
+    }
+
+    return [tmin, tmax]
+}
+
+function compareFloats(a, b, epsilon=Number.EPSILON) {
+    /*
+    *   Returns true if numbers a and b are inside of epsilon tolerance.
+    * */
+    return Math.abs(a-b) < epsilon
+}
 
 
 
@@ -143,6 +245,32 @@ function runTests(){
     } else {
         console.log('Deepfind test 2 :: FAILED')
     }
+
+    let s = "asdfŽĐŠĆČ_:;*?=)$€öä¨iöáéíóăěę"
+    let b64 = utf8ToBase64(s)
+
+    if(isSame(s, base64ToUtf8(b64))){
+        console.log('Base64 Decoder/Encoder :: PASSED')
+    } else {
+        console.log('Base64 Decoder/Encoder :: FAILED')
+    }
+
+    let exp
+    let act
+
+    act = findMinMax([2, 3, 5, 7, 11, 13, 17, 19, 23, 29])
+    exp = [2, 29]
+    console.log(`Got ${act} :: Expected ${exp}`)
+
+    act = compareFloats(100000.1+0.2, 100000.3)
+    exp = true
+    console.log(`Got ${act} :: Expected ${exp}`)
+
+    const array1 = [1, 2, 3, 4, 5];
+    const array2 = [4, 5, 6, 7, 8];
+    act = findCommonElements(array1, array2);
+    exp = [4, 5]
+    console.log(`Got ${act} :: Expected ${exp}`)
 }
 
 runTests()
