@@ -192,6 +192,26 @@ function compareFloats(a, b, epsilon=Number.EPSILON) {
     return Math.abs(a-b) < epsilon
 }
 
+function uuid(format = [8, 4, 4, 4, 12]) {
+    /*
+    * Generates UUID string with a given format. Default format is 8-4-4-4-12
+        xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+      You can use your own format. For example [3, 3, 3] would return uuid in format xxx-xxx-xxx
+    */
+    let s = "";
+    const formatLen = format.length;
+    for (let e = 0; e < formatLen; e++) {
+        for (let i = 0; i < format[e]; i++) {
+            // Generate a random number between 0 and 15, convert it to hex, and remove the "0x" prefix
+            s += Math.floor(Math.random() * 16).toString(16);
+        }
+        if (e + 1 < format.length) {
+            s += "-";
+        }
+    }
+    return s;
+}
+
 
 
 /***********************/

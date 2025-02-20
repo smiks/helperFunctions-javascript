@@ -26,8 +26,16 @@ encodes UTF-8 string to base64 (useful when getting 'characters outside of the L
 - #### base64ToUtf8(base64)
 decodes base64 back to UTF-8 string
 
+- #### findInArray(array, what)
+Fast search through array. It only works when looking for simple types.
+
 - #### findMinMax(array)
 Returns both MIN and MAX value of the array
 
 - #### compareFloats(floatA, floatB, [epsilon])
 Returns true if numbers floatA and floatB are inside of epsilon tolerance.
+
+- #### uuid(format = [8, 4, 4, 4, 12])
+Generates UUID string with a given format. Default format is 8-4-4-4-12
+xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+You can use your own format. For example [3, 3, 3] would return uuid in format xxx-xxx-xxx
