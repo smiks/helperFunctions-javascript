@@ -35,7 +35,10 @@ Returns both MIN and MAX value of the array
 - #### compareFloats(floatA, floatB, [epsilon])
 Returns true if numbers floatA and floatB are inside of epsilon tolerance.
 
-- #### uuid(format = [8, 4, 4, 4, 12])
-Generates UUID string with a given format. Default format is 8-4-4-4-12
-xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+- #### uuidGenerator(format = [8, 4, 4, 4, 12])
+Generates UUID string with a given format. Default format is 8-4-4-4-12 \
+xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx \
 You can use your own format. For example [3, 3, 3] would return uuid in format xxx-xxx-xxx
+
+- #### isValidUUIDFormat(uuid, format = [8, 4, 4, 4, 12]) 
+Validates if given UUID matches given format. Default format is 8-4-4-4-12

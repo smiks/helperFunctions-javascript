@@ -192,7 +192,7 @@ function compareFloats(a, b, epsilon=Number.EPSILON) {
     return Math.abs(a-b) < epsilon
 }
 
-function uuid(format = [8, 4, 4, 4, 12]) {
+function uuidGenerator(format = [8, 4, 4, 4, 12]) {
     /*
     * Generates UUID string with a given format. Default format is 8-4-4-4-12
         xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
@@ -202,7 +202,7 @@ function uuid(format = [8, 4, 4, 4, 12]) {
     const formatLen = format.length;
     for (let e = 0; e < formatLen; e++) {
         for (let i = 0; i < format[e]; i++) {
-            // Generate a random number between 0 and 15, convert it to hex, and remove the "0x" prefix
+            // Generate a random number between 0 and 15, convert it to hex
             s += Math.floor(Math.random() * 16).toString(16);
         }
         if (e + 1 < format.length) {
@@ -210,6 +210,36 @@ function uuid(format = [8, 4, 4, 4, 12]) {
         }
     }
     return s;
+}
+
+function isValidUUIDFormat(uuid, format = [8, 4, 4, 4, 12]) {
+    /*
+    * Validates if given UUID matches given format. Default format is 8-4-4-4-12
+    */
+    
+    const segments = uuid.split("-");
+    const segmentsLen = segments.length
+    const formatLen = format.length
+
+    if (segments.length !== formatLen) {
+        return false;
+    }
+    
+    for (let i = 0; i < segmentsLen; i++) {
+        if (segments[i].length !== format[i]) {
+            return false;
+        }
+    }
+    
+    const hexRegex = /^[0-9a-f]+$/;
+    for (const segment of segments) {
+        if (!hexRegex.test(segment)) {
+            return false;
+        }
+    }
+
+    
+    return true;
 }
 
 
@@ -291,6 +321,10 @@ function runTests(){
     act = findCommonElements(array1, array2);
     exp = [4, 5]
     console.log(`Got ${act} :: Expected ${exp}`)
+
+    const uuid = uuidGenerator([6,5,4]);
+    const uuidVaild = isValidUUIDFormat(uuid, [6,5,4]) ? "PASSED" : "FAILED";
+    console.log(`UUID generator test :: ${uuidVaild}`)
 }
 
 runTests()
